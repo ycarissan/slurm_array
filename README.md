@@ -14,10 +14,11 @@ Running an interactive session :
 ```
 srun --pty /bin/bash -i
 ```
+
 ## Dependencies
 
 ```
-sbatch --dependency=<type:job_id[:job_id][,type:job_id[:job_id]]> ...
+sbatch --dependency=<type:job_id[:job_id][,type:job_id[:job_id]]> ... submit.job
 ```
 
  * after:jobid[:jobid...] 	job can begin after the specified jobs have started
@@ -28,3 +29,10 @@ sbatch --dependency=<type:job_id[:job_id][,type:job_id[:job_id]]> ...
 
 
 ## Arrays
+
+Run 5 jobs **with the same jobid**.
+The variable SLURM_ARRAY_TASK_ID contains the value, the job was sent with (here 1, 2, 3, 4 or 5).
+
+```
+sbatch -a 1-5 submit.job
+```
