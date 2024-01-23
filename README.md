@@ -7,14 +7,6 @@ Up to date state of the queue :
 watch squeue -u yannick
 ```
 
-## Interactive sessions
-
-Running an interactive session :
-
-```
-srun --pty /bin/bash -i
-```
-
 ## Dependencies
 
 ```
