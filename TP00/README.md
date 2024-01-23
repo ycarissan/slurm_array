@@ -55,7 +55,7 @@ srun --pty /bin/bash -i
 Interactive session on one node named *super_name* with 16 tasks and merged standard and error outputs
 from in one file named *nameofjob_jobid.jobtask.outerr* :
 ```
-srun --pty /bin/bash -i -J super_name -N 1 -n 16 -o %x_%J.outerr
+srun -i -J super_name -N 1 -n 16 -o %x_%J.outerr --pty /bin/bash
 ```
 ## Redirection
 
