@@ -1,0 +1,13 @@
+#!/bin/sh
+
+jobfile=$1
+
+echo
+echo -n 'srun '
+for l in $(grep SBATCH $jobfile|sed 's/#SBATCH//')
+do
+        echo -n "$l "
+done
+echo -n '--pty /bin/bash -i'
+echo
+echo
