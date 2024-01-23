@@ -86,6 +86,13 @@ Redirection of standard and error outputs merged in one file:
 ls 2>&1> file_list_and_error_message_merged
 ```
 
+Starndard output of one command given to another. Here, the list of files in the current
+directory is sent to the grep command, which outputs the number of files containing "toto" in
+their name (hopefully 0).
+```
+ls | grep -c toto
+```
+
 ## Return code
 A linux command **always** sends back a return code (or exit status).
 
@@ -110,3 +117,23 @@ else
   echo "Something went wrong"
 fi
 ```
+
+IMPORTANT: the return code of a script is the return code of the last command
+executed in the script.
+
+```
+cat << EOF > script.sh
+ls
+if [ $? -eq 0 ]
+then
+  echo "Everything went fine"
+else
+  echo "Something went wrong"
+fi
+EOF
+sh ./script.sh
+echo $?
+0
+#Because the last command executed returned 0: it is the echo command :)
+```
+
