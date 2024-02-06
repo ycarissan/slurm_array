@@ -55,13 +55,7 @@ fi
 
 ## Wait for a job to finish (independent of the rc)
 
-```
-jid01=$(sbatch submit_01.job)
-jid02=$(sbatch submit_02.job)
-jid03=$(sbatch submit_03.job)
-jid04=$(sbatch submit_04.job)
-```
-
+### Wrong solution
 ```
 cat << EOF > submit_01.job
 sleep 10
@@ -76,14 +70,52 @@ EOF
 ```
 
 ```
-rm file_01.out
-rm file_02.out
 sbatch submit_01.job
 sbatch submit_02.job
 ```
 
 After both jobs have finished, no file file_02.out.
 
+### Almost not wrong solution
+```
+rm file_01.out
+rm file_02.out
+jid01=$(sbatch submit_01.job)
+jid02=$(sbatch --dependency=after:${jid01} submit_02.job)
+```
 
-## Wait for a job to finish (rc=0)
-## Wait for a job to finish (rc!=0)
+After both jobs have finished, no file file_02.out.
+
+### Good solution
+```
+rm file_01.out
+rm file_02.out
+jid01=$(sbatch submit_01.job)
+jid02=$(sbatch --dependency=afterany:${jid01} submit_02.job)
+```
+
+After both jobs have finished, file_02.out exits!
+
+## Wait for a job to finish and check rc
+```
+cat << EOF > submit_03.job
+[ -f file_01.out ]
+EOF
+```
+
+```
+cat << EOF > submit_04.job
+echo "file_01.out exists" > resultat.txt
+EOF
+```
+
+```
+cat << EOF > submit_05.job
+echo "file_01.out n'existe pas" > resultat.txt
+EOF
+```
+
+rm file_01.out
+jid01=$(sbatch submit_01.job)
+jid03=$(sbatch --dependency=afterok:${jid01} submit_03.job)
+jid04=$(sbatch --dependency=afternotok:${jid01} submit_04.job)
