@@ -115,7 +115,9 @@ echo "file_01.out n'existe pas" > resultat.txt
 EOF
 ```
 
+```
 rm file_01.out
 jid01=$(sbatch submit_01.job)
 jid03=$(sbatch --dependency=afterok:${jid01} submit_03.job)
 jid04=$(sbatch --dependency=afternotok:${jid01} submit_04.job)
+```
