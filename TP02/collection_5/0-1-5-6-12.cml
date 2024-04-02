@@ -1,0 +1,74 @@
+<molecule>
+	<atomArray>
+		<atom id="c1" elementType="C" x3="0.0" y3="0.0" z3="0.0"/>
+		<atom id="c2" elementType="C" x3="1.2145" y3="0.694" z3="0.0"/>
+		<atom id="c3" elementType="C" x3="-1.2145" y3="0.694" z3="0.0"/>
+		<atom id="c4" elementType="C" x3="1.2145" y3="2.082" z3="0.0"/>
+		<atom id="c5" elementType="C" x3="2.429" y3="0.0" z3="0.0"/>
+		<atom id="c6" elementType="C" x3="0.0" y3="2.776" z3="0.0"/>
+		<atom id="c7" elementType="C" x3="2.4289999999999994" y3="2.776" z3="0.0"/>
+		<atom id="c8" elementType="C" x3="-1.2145" y3="2.082" z3="0.0"/>
+		<atom id="c9" elementType="C" x3="-4.440892098500626E-16" y3="4.164" z3="0.0"/>
+		<atom id="c10" elementType="C" x3="-2.4290000000000003" y3="2.776" z3="0.0"/>
+		<atom id="c11" elementType="C" x3="3.6434999999999995" y3="0.694" z3="0.0"/>
+		<atom id="c12" elementType="C" x3="3.6434999999999995" y3="2.082" z3="0.0"/>
+		<atom id="c13" elementType="C" x3="2.4289999999999994" y3="4.164" z3="0.0"/>
+		<atom id="c14" elementType="C" x3="-1.2145000000000004" y3="4.858" z3="0.0"/>
+		<atom id="c15" elementType="C" x3="1.2144999999999995" y3="4.858" z3="0.0"/>
+		<atom id="c16" elementType="C" x3="-2.4290000000000003" y3="4.164" z3="0.0"/>
+		<atom id="c17" elementType="C" x3="3.6434999999999995" y3="4.858" z3="0.0"/>
+		<atom id="c18" elementType="C" x3="1.2144999999999995" y3="6.2459999999999996" z3="0.0"/>
+		<atom id="c19" elementType="C" x3="3.6434999999999995" y3="6.2459999999999996" z3="0.0"/>
+		<atom id="c20" elementType="C" x3="2.4289999999999994" y3="6.9399999999999995" z3="0.0"/>
+		<atom id="h1" elementType="H" x3="0.0" y3="-1.0" z3="0.0"/>
+		<atom id="h2" elementType="H" x3="-2.082" y3="0.19829999999999998" z3="0.0"/>
+		<atom id="h3" elementType="H" x3="2.429" y3="-1.0" z3="0.0"/>
+		<atom id="h4" elementType="H" x3="-3.2965000000000004" y3="2.2803" z3="0.0"/>
+		<atom id="h5" elementType="H" x3="4.510999999999999" y3="0.19829999999999998" z3="0.0"/>
+		<atom id="h6" elementType="H" x3="4.510999999999999" y3="2.5776999999999997" z3="0.0"/>
+		<atom id="h7" elementType="H" x3="-1.2145000000000004" y3="5.858" z3="0.0"/>
+		<atom id="h8" elementType="H" x3="-3.2965000000000004" y3="4.6597" z3="0.0"/>
+		<atom id="h9" elementType="H" x3="4.510999999999999" y3="4.362299999999999" z3="0.0"/>
+		<atom id="h10" elementType="H" x3="0.3469999999999994" y3="6.7417" z3="0.0"/>
+		<atom id="h11" elementType="H" x3="4.510999999999999" y3="6.7417" z3="0.0"/>
+		<atom id="h12" elementType="H" x3="2.4289999999999994" y3="7.9399999999999995" z3="0.0"/>
+	</atomArray>
+	<bondArray>
+		<bond atomRefs2="c1 c2" order="A" />
+		<bond atomRefs2="c1 c3" order="A" />
+		<bond atomRefs2="c2 c4" order="A" />
+		<bond atomRefs2="c2 c5" order="A" />
+		<bond atomRefs2="c3 c8" order="A" />
+		<bond atomRefs2="c4 c6" order="A" />
+		<bond atomRefs2="c4 c7" order="A" />
+		<bond atomRefs2="c5 c11" order="A" />
+		<bond atomRefs2="c6 c8" order="A" />
+		<bond atomRefs2="c6 c9" order="A" />
+		<bond atomRefs2="c7 c12" order="A" />
+		<bond atomRefs2="c7 c13" order="A" />
+		<bond atomRefs2="c8 c10" order="A" />
+		<bond atomRefs2="c9 c14" order="A" />
+		<bond atomRefs2="c9 c15" order="A" />
+		<bond atomRefs2="c10 c16" order="A" />
+		<bond atomRefs2="c11 c12" order="A" />
+		<bond atomRefs2="c13 c15" order="A" />
+		<bond atomRefs2="c13 c17" order="A" />
+		<bond atomRefs2="c14 c16" order="A" />
+		<bond atomRefs2="c15 c18" order="A" />
+		<bond atomRefs2="c17 c19" order="A" />
+		<bond atomRefs2="c18 c20" order="A" />
+		<bond atomRefs2="c19 c20" order="A" />
+		<bond atomRefs2="c1 h1" order="S" />
+		<bond atomRefs2="c3 h2" order="S" />
+		<bond atomRefs2="c5 h3" order="S" />
+		<bond atomRefs2="c10 h4" order="S" />
+		<bond atomRefs2="c11 h5" order="S" />
+		<bond atomRefs2="c12 h6" order="S" />
+		<bond atomRefs2="c14 h7" order="S" />
+		<bond atomRefs2="c16 h8" order="S" />
+		<bond atomRefs2="c17 h9" order="S" />
+		<bond atomRefs2="c18 h10" order="S" />
+		<bond atomRefs2="c19 h11" order="S" />
+		<bond atomRefs2="c20 h12" order="S" />
+	</bondArray>
+</molecule>

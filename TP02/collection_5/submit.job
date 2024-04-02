@@ -1,0 +1,155 @@
+#!/bin/sh
+#SBATCH -J Collection
+#SBATCH -p skylake
+#SBATCH -N 1
+#SBATCH -n 16
+#SBATCH -A b278
+#SBATCH -t 8:00:00
+#SBATCH -o %x_%J.outerr
+## #SBATCH -L scratchfast:2
+## #SBATCH -e %x_%J.err
+
+XTB=/home/ycarissan/prog/grimme/xtb-6.6.0/bin/xtb
+WORKDIR=${SLURM_SUBMIT_DIR}
+ITASK=${SLURM_ARRAY_TASK_ID}
+RADICAL=$(sed -n "${ITASK}p" list)
+FILENAME_CML=${RADICAL}.cml
+FILENAME_MOL=${RADICAL}.mol
+FILENAME_OPT_MM=${RADICAL}_optMM.xyz
+FILENAME_OPT_XTB=xtbopt.xyz
+FILENAME_OPT_G16=${RADICAL}_g16opt.xyz
+OUTPUT_XTB=${RADICAL}_xtb.out
+OUTPUT_G16_OPTFREQ=${RADICAL}_optfreq.log
+OUTPUT_G16_NICS=${RADICAL}_nics.log
+NICS_INPUT_GEOM=${FILENAME_OPT_G16/.xyz/_withcenters.xyz}
+SCRATCHDIR=/scratch/$SLURM_JOB_USER/$SLURM_JOB_ID/
+ARCHIVE=${RADICAL}.tar.gz
+symm="symmetry=loose"
+
+echo "Job started from ... : ${WORKDIR}"
+echo "task number ........ : ${ITASK}"
+echo "molecule ........... : ${RADICAL}"
+echo "cml file ........... : ${FILENAME_CML}" 
+echo "mol file ........... : ${FILENAME_MOL}" 
+echo "xyz to opt with xtb  : ${FILENAME_OPT_MM}" 
+echo "geom opt xtb ....... : ${FILENAME_OPT_XTB}"
+echo "geom opt g16 ....... : ${FILENAME_OPT_G16}"
+echo "output xtb ......... : ${OUTPUT_XTB}"
+echo "output g16 opt freq  : ${OUTPUT_G16_OPTFREQ}"
+echo "output g16 NICS .... : ${OUTPUT_G16_NICS}"
+echo "nics input geometry  : ${NICS_INPUT_GEOM}"
+echo "SCRATCHDIR ......... : ${SCRATCHDIR}"
+
+if [ -f ${WORKDIR}/${ARCHIVE} ]
+then
+    tar -xzvf ${WORKDIR}/${ARCHIVE} *_nics.log -O|grep "Normal termination of Gaussian" && echo "Already OK" && exit
+fi
+
+echo "Chargement des modules"
+module purge
+module load userspace/all
+echo "ok"
+
+echo "Activation du python"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/ycarissan/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/ycarissan/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/ycarissan/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/ycarissan/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+export MODULEPATH=${MODULEPATH}:$PWD/modulefiles
+
+
+conda init bash
+conda activate avaret_util
+
+echo "Chargement de gaussian"
+g16root=/home/ycarissan/G16_SLATER
+GAUSS_SCRDIR=$SCRATCHDIR
+export g16root GAUSS_SCRDIR
+. $g16root/g16/bsd/g16.profile
+echo "ok"
+
+echo "Creating SCRATCHDIR"
+mkdir -p $SCRATCHDIR
+
+[ -d $SCRATCHDIR ] || exit
+
+echo "Entering SCRATCHDIR"
+cd $SCRATCHDIR
+
+echo "Getting cml file from ${WORKDIR}"
+rsync ${WORKDIR}/${FILENAME_CML} .
+
+echo "Converting ${FILENAME_CML} to ${FILENAME_MOL}"
+obabel -icml -omol ${FILENAME_CML} -O${FILENAME_MOL}
+
+echo "Optimizing mol with MM to xyz"
+python3 /home/ycarissan/prog/mmopt/mmopt.py ${RADICAL}
+
+echo "Optimizing xyz with xtb"
+ls -l
+
+$XTB ${FILENAME_OPT_MM} --opt > ${OUTPUT_XTB}
+$XTB ${FILENAME_OPT_XTB} --hess
+[ -f xtbhess.xyz ] && $XTB xtbhess.xyz --opt && symm=""
+rm xtbhess.xyz
+$XTB xtbopt.xyz --hess
+[ -f xtbhess.xyz ] && touch ${WORKDIR}/${RADICAL}.problem && exit
+
+#Assigne la multiplicité de spin
+nH=$(grep -v 'H:' ${FILENAME_OPT_XTB}|grep -c ^\ *H)
+if [ $((nH%2)) -eq 0 ]; then
+  mult=1
+else
+  mult=2
+fi
+
+echo "Multiplicite ... : ${mult}"
+
+echo "Optimizing + Freq xyz with g16"
+g16 << EOF > ${OUTPUT_G16_OPTFREQ}
+%nproc=${SLURM_NTASKS}
+%mem=16000MB
+# 6-31g b3lyp opt freq $symm
+
+${RADICAL} OPT FREQ
+
+0 $mult
+$(sed 1,2d ${FILENAME_OPT_XTB})
+
+EOF
+
+echo "Getting optimized geometry"
+obabel -ig16 -oxyz ${OUTPUT_G16_OPTFREQ} -O${FILENAME_OPT_G16}
+
+python3 /home/ycarissan/prog/avaret_util/addcenterstoxyz.py ${FILENAME_OPT_G16}
+
+g16 << EOF > ${OUTPUT_G16_NICS}
+%nproc=${SLURM_NTASKS}
+%mem=16000MB
+# b3lyp/def2TZVP scf=tight $symm nmr=giao
+
+titre
+
+0 $mult
+$(sed 1,2d $NICS_INPUT_GEOM)
+
+EOF
+
+tar -czvf ${ARCHIVE} ${RADICAL}*
+
+cp ${ARCHIVE} ${WORKDIR}
+
+rm ${SCRATCHDIR}/*
+rm ${SCRATCHDIR}/.*
+rmdir ${SCRATCHDIR}
