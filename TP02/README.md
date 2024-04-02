@@ -56,11 +56,9 @@ Supposons que vous ayez une liste d'arguments spécifiques que vous voulez utili
 Créez un fichier `arguments.txt` contenant les arguments pour chaque tâche, par exemple :
 
 ```plaintext
-argument1
-argument2
-10
-20
-30
+etoh
+meoh
+water
 ```
 
 Modifiez le script `job_array.sh` pour lire les arguments à partir du fichier :
@@ -69,7 +67,7 @@ Modifiez le script `job_array.sh` pour lire les arguments à partir du fichier :
 #!/bin/bash
 #SBATCH --job-name=my_array_job
 #SBATCH --output=output_%A_%a.txt
-#SBATCH --array=1-5
+#SBATCH --array=1-3
 
 # Chemin vers le script à exécuter
 SCRIPT="my_script.sh"
@@ -77,10 +75,31 @@ SCRIPT="my_script.sh"
 # Lire l'argument correspondant au numéro de tâche
 ARGUMENT=$(sed -n "${SLURM_ARRAY_TASK_ID}p" arguments.txt)
 
+...
+initialisation de gaussian
+...
+
 # Exécuter le script avec l'argument
-$SCRIPT $ARGUMENT
+g16 $ARGUMENT.com
 ```
 
 Dans cet exemple, `sed -n "${SLURM_ARRAY_TASK_ID}p" arguments.txt` extrait l'argument correspondant au numéro de tâche du fichier `arguments.txt`.
 
 En utilisant ces exemples, vous pouvez exploiter pleinement la flexibilité des job arrays avec Slurm pour vos tâches parallèles.
+
+### 3. Exemple Réel
+Sur le mesocentre, on peut lancer le script submit.job de collection_5:
+
+```bash
+sbatch -a 1-22 submit.job
+```
+
+Le traitement du fichier cml est assuré par le script submit.job pour les 22 molecules.
+Avantage: si on veut modifier un niveau de calcul, il suffit de le faire une seule fois.
+Par ailleurs, on peut ne lancer le traitement que pour les molécules 3 à 5, 11 à 14 et 17 ainsi:
+
+```bash
+sbatch -a 3-5,11-14,17 submit.job
+```
+
+:heart:
