@@ -26,8 +26,7 @@ Assurez-vous que votre script `my_script.sh` accepte un argument, qui sera le nu
 ```bash
 #!/bin/bash
 
-echo "Hello from task $1"
-# Insérer ici votre code pour le traitement en fonction de l'argument
+echo "Le double de $1 est $(( $1 * 2 ))"
 ```
 
 ### 2. Exemples Complexes
