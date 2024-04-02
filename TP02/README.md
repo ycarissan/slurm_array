@@ -1,5 +1,3 @@
-Bien sûr, voici le tutoriel révisé en se concentrant uniquement sur les job arrays avec des exemples plus complexes :
-
 ### 1. Exemple Simple
 Supposons que vous ayez un script appelé `my_script.sh` qui prend un argument numérique comme entrée. Vous souhaitez exécuter ce script pour différentes valeurs de cet argument de manière parallèle en utilisant un job array.
 
